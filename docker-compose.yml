@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: flashtrack-db
+    environment:
+      POSTGRES_DB: flashtrack
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"  # Using 5433 on host to avoid conflict
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - flashtrack-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flashtrack-app
+    environment:
+      DB_URL: postgresql://postgres:postgres@postgres:5432/flashtrack?sslmode=disable
+      PORT: 8080
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production-min-32-chars
+    ports:
+      - "8081:8080"  # Using 8081 on host to avoid conflict
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - flashtrack-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./flashtrack-dashboard
+      dockerfile: Dockerfile
+    container_name: flashtrack-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - app
+    networks:
+      - flashtrack-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  flashtrack-network:
+    driver: bridge

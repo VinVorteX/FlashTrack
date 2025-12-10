@@ -1,0 +1,49 @@
+# Binaries
+bin/
+/tmp/flashtrack
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Frontend
+flashtrack-dashboard/node_modules/
+flashtrack-dashboard/dist/
+flashtrack-dashboard/.env
+flashtrack-dashboard/.env.local
+
+# Go workspace file
+go.work
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
