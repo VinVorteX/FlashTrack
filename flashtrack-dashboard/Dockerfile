@@ -12,6 +12,9 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Set environment variable for build
+ENV VITE_API_BASE_URL=http://16.171.235.183:8081
+
 # Build the app
 RUN npm run build
 
