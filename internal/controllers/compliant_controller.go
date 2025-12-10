@@ -31,11 +31,6 @@ func GetComplaints(c *gin.Context) {
 		return
 	}
 
-	// Ensure we return empty array instead of null
-	if complaints == nil {
-		complaints = []models.Complaint{}
-	}
-
 	// Prepare response with resident and staff details
 	type ComplaintResponse struct {
 		models.Complaint
@@ -45,6 +40,11 @@ func GetComplaints(c *gin.Context) {
 	}
 
 	var response []ComplaintResponse
+	// Ensure we always return an array, never null
+	if len(complaints) == 0 {
+		c.JSON(200, []ComplaintResponse{})
+		return
+	}
 	for _, complaint := range complaints {
 		// Get resident name
 		var resident models.User

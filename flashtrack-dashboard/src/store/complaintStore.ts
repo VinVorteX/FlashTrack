@@ -26,7 +26,7 @@ export const useComplaintStore = create<ComplaintState>((set, get) => ({
   updateComplaint: (id, updates) =>
     set((state) => ({
       complaints: state.complaints.map((c) =>
-        c.ID === id ? { ...c, ...updates } : c
+        (c.ID === id || c.id === id) ? { ...c, ...updates } : c
       ),
     })),
   setFilter: (filter) => set({ filter }),

@@ -14,3 +14,9 @@ func FindUserByEmail(email string) (models.User, error) {
     result := database.DB.Where("email = ?", email).First(&user)
     return user, result.Error
 }
+
+func FindAdminBySociety(societyID uint) (models.User, error) {
+    var user models.User
+    result := database.DB.Where("society_id = ? AND role = ?", societyID, "admin").First(&user)
+    return user, result.Error
+}

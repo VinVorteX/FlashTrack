@@ -112,7 +112,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
                 <p className="text-sm font-medium text-foreground truncate">{user?.Name}</p>
                 <p className="text-xs text-muted-foreground capitalize">{user?.Role}</p>
                 {user?.SocietyName && (
-                  <p className="text-xs text-muted-foreground/75 truncate">📍 {user.SocietyName}</p>
+                  <p className="text-xs text-muted-foreground/75 truncate">{user.SocietyName}</p>
                 )}
               </div>
             </div>

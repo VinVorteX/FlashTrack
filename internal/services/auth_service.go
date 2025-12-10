@@ -11,6 +11,14 @@ import (
 )
 
 func Register(user models.User) error {
+	// Check if admin already exists for this society
+	if user.Role == "admin" {
+		existingAdmin, err := repository.FindAdminBySociety(user.SocietyID)
+		if err == nil && existingAdmin.ID != 0 {
+			return errors.New("admin already exists for this society")
+		}
+	}
+	
 	hashed := utils.HashPassword(user.Password)
 	user.Password = hashed
 	return repository.CreateUser(user)

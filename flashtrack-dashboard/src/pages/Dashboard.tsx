@@ -121,9 +121,18 @@ const Dashboard = () => {
 
   const stats = {
     total: safeComplaints.length,
-    pending: safeComplaints.filter((c) => (c.status || c.Status) === "pending").length,
-    inProgress: safeComplaints.filter((c) => (c.status || c.Status) === "in-progress").length,
-    resolved: safeComplaints.filter((c) => (c.status || c.Status) === "resolved").length,
+    pending: safeComplaints.filter((c) => {
+      const status = c.status || c.Status;
+      return status === "pending";
+    }).length,
+    inProgress: safeComplaints.filter((c) => {
+      const status = c.status || c.Status;
+      return status === "in-progress";
+    }).length,
+    resolved: safeComplaints.filter((c) => {
+      const status = c.status || c.Status;
+      return status === "resolved";
+    }).length,
   };
 
   const filteredComplaints = safeComplaints.filter((c) => {
@@ -138,12 +147,6 @@ const Dashboard = () => {
     setAssigningId(complaintId);
     try {
       await complaintService.assignStaff(complaintId, staffId);
-      updateComplaint(complaintId, {
-        staff_id: staffId,
-        StaffID: staffId,
-        status: "in-progress",
-        Status: "in-progress",
-      });
       toast.success("Staff assigned successfully");
       // Refresh complaints to ensure stats update
       const complaintsData = await complaintService.getAll();
@@ -159,10 +162,6 @@ const Dashboard = () => {
     setResolvingId(complaintId);
     try {
       await complaintService.resolve(complaintId);
-      updateComplaint(complaintId, {
-        status: "resolved",
-        Status: "resolved",
-      });
       toast.success("Complaint marked as resolved");
       // Refresh complaints to get updated data
       const complaintsData = await complaintService.getAll();
@@ -251,7 +250,7 @@ const Dashboard = () => {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             title="Total Complaints"
             value={stats.total}
@@ -276,7 +275,7 @@ const Dashboard = () => {
             icon={CheckCircle}
             variant="success"
           />
-        </div>
+        </div> */}
 
         {/* Search & Filter */}
         <div className="bg-card rounded-xl border border-border p-4 shadow-soft">
