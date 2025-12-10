@@ -21,6 +21,7 @@ import {
 import { useComplaintStore } from "@/store/complaintStore";
 import { complaintService } from "@/services/complaint.service";
 import { toast } from "sonner";
+import api from "@/services/api";
 import { Search, UserPlus, Shield, Loader2 } from "lucide-react";
 import { CATEGORIES } from "@/types";
 
@@ -43,11 +44,7 @@ const AdminPanel = () => {
       try {
         const [complaintsData, staffData] = await Promise.all([
           complaintService.getAll(),
-          fetch('http://localhost:8081/api/staff', {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('flashtrack_token')}`
-            }
-          }).then(r => r.json()).catch(() => [])
+          api.get('/api/staff').then(r => r.data).catch(() => [])
         ]);
         setComplaints(complaintsData || []);
         setStaffMembers(Array.isArray(staffData) ? staffData : []);

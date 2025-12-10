@@ -22,6 +22,7 @@ import {
 import { useComplaintStore } from '@/store/complaintStore';
 import { complaintService } from '@/services/complaint.service';
 import { useAuthStore } from '@/store/authStore';
+import api from '@/services/api';
 import { toast } from 'sonner';
 import { Plus, Search, Filter, ClipboardList } from 'lucide-react';
 import type { ComplaintStatus } from '@/types';
@@ -51,9 +52,7 @@ const Complaints = () => {
         setComplaints(complaintsData || []);
         
         if (isAdmin) {
-          const staffData = await fetch('http://localhost:8081/api/staff', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('flashtrack_token')}` }
-          }).then(r => r.json()).catch(() => []);
+          const staffData = await api.get('/api/staff').then(r => r.data).catch(() => []);
           setStaffMembers(Array.isArray(staffData) ? staffData : []);
         }
       } catch (error) {

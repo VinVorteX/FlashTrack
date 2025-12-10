@@ -25,6 +25,7 @@ import {
 import { useAuthStore } from "@/store/authStore";
 import { useComplaintStore } from "@/store/complaintStore";
 import { complaintService } from "@/services/complaint.service";
+import api from "@/services/api";
 import {
   ClipboardList,
   Clock,
@@ -58,16 +59,12 @@ const Dashboard = () => {
         setComplaints(complaintsData || []);
         
         if (isAdmin) {
-          const staffData = await fetch('http://localhost:8081/api/staff', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('flashtrack_token')}` }
-          }).then(r => r.json()).catch(() => []);
+          const staffData = await api.get('/api/staff').then(r => r.data).catch(() => []);
           setStaffMembers(Array.isArray(staffData) ? staffData : []);
         }
 
         if (isStaff) {
-          const pointsData = await fetch('http://localhost:8081/api/staff/points', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('flashtrack_token')}` }
-          }).then(r => r.json()).catch(() => null);
+          const pointsData = await api.get('/api/staff/points').then(r => r.data).catch(() => null);
           setStaffPoints(pointsData);
         }
 
@@ -83,16 +80,9 @@ const Dashboard = () => {
           if (resolved.length > 0) {
             // Check which ones don't have feedback yet
             try {
-              const feedbackResponse = await fetch('http://localhost:8081/api/feedback/check', {
-                method: 'POST',
-                headers: { 
-                  'Authorization': `Bearer ${localStorage.getItem('flashtrack_token')}`,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                  complaint_ids: resolved.map((c: any) => c.id || c.ID) 
-                })
-              }).then(r => r.json()).catch(() => ({ pending: [] }));
+              const feedbackResponse = await api.post('/api/feedback/check', {
+                complaint_ids: resolved.map((c: any) => c.id || c.ID)
+              }).then(r => r.data).catch(() => ({ pending: [] }));
               
               const pendingIds = feedbackResponse.pending || [];
               const needsFeedback = resolved.find((c: any) => 
@@ -182,9 +172,7 @@ const Dashboard = () => {
       
       // Refresh staff points if user is staff
       if (isStaff) {
-        const pointsData = await fetch('http://localhost:8081/api/staff/points', {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('flashtrack_token')}` }
-        }).then(r => r.json()).catch(() => null);
+        const pointsData = await api.get('/api/staff/points').then(r => r.data).catch(() => null);
         setStaffPoints(pointsData);
       }
     } catch (error) {
