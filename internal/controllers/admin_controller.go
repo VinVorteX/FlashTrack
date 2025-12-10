@@ -21,6 +21,30 @@ func GetStaffMembers(c *gin.Context) {
 	c.JSON(200, staff)
 }
 
+func GetSocietyStats(c *gin.Context) {
+	user := c.MustGet("user").(*models.User)
+
+	var staffCount, residentCount int64
+
+	// Count staff members
+	if err := database.DB.Model(&models.User{}).Where("role = ? AND society_id = ?", "staff", user.SocietyID).Count(&staffCount).Error; err != nil {
+		c.JSON(500, gin.H{"error": "failed to count staff"})
+		return
+	}
+
+	// Count residents (users with role 'user')
+	if err := database.DB.Model(&models.User{}).Where("role = ? AND society_id = ?", "user", user.SocietyID).Count(&residentCount).Error; err != nil {
+		c.JSON(500, gin.H{"error": "failed to count residents"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"staff_count":    staffCount,
+		"resident_count": residentCount,
+		"total_count":    staffCount + residentCount,
+	})
+}
+
 func AssignStaff(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 

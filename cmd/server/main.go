@@ -76,6 +76,7 @@ func main() {
 	adminRoutes.Use(middleware.RoleMiddleware("admin", "staff"))
 	{
 		adminRoutes.PUT("/assign", controllers.AssignStaff)
+		adminRoutes.GET("/stats", controllers.GetSocietyStats)
 	}
 
 	// Staff list endpoint for admins
